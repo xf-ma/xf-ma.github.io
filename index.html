@@ -1,0 +1,865 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+html { color-scheme: light; } body { margin: 0; } img { max-width: 100%; } [hidden] { display: none !important; }
+</style>
+<title>Xiaofeng Ma</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Xiaofeng Ma, doctoral candidate at Aalto University. Sensor fusion, inertial navigation and probabilistic state estimation.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@500;600&display=swap">
+<style>
+/* Layout: sticky identity column on the left, a single reading column on the right; stacks on phones. */
+:root {
+  --bg: #F4F5F8;
+  --surface: #FFFFFF;
+  --ink: #141A25;
+  --muted: #586174;
+  --rule: #DCE0E8;
+  --accent: #5A2DB0;      /* left foot, links */
+  --accent-soft: #ECE6F8;
+  --amber: #B06A05;       /* right foot */
+  --drift: #9EA5B3;
+  --display: "Newsreader", "Noto Serif SC", Georgia, "Times New Roman", serif;
+  --body: "IBM Plex Sans", "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1219; --surface: #161B24; --ink: #E5E8EF; --muted: #98A0B0; --rule: #29303C;
+    --accent: #B79EFF; --accent-soft: #241D3A; --amber: #E9A53E; --drift: #535B6B;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1219; --surface: #161B24; --ink: #E5E8EF; --muted: #98A0B0; --rule: #29303C;
+  --accent: #B79EFF; --accent-soft: #241D3A; --amber: #E9A53E; --drift: #535B6B;
+  color-scheme: dark;
+}
+
+/* Language switching: English is the default before scripts run. */
+:root:lang(zh) [data-l="en"], :root:not(:lang(zh)) [data-l="zh"] { display: none !important; }
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+.shell {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 40px 64px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+}
+@media (min-width: 960px) {
+  .shell { grid-template-columns: 280px minmax(0, 1fr); gap: 72px; padding-block: 64px 96px; }
+  .side { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 48px); align-self: start; }
+}
+
+/* ---------- Identity column ---------- */
+.side { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+.id { display: flex; gap: 18px; align-items: center; }
+@media (min-width: 960px) { .id { flex-direction: column; align-items: flex-start; } }
+.photo {
+  width: 112px; aspect-ratio: 360 / 470; max-width: 100%;
+  object-fit: cover; border-radius: 6px; background: var(--surface);
+  border: 1px solid var(--rule);
+}
+@media (min-width: 960px) { .photo { width: 156px; } }
+.name { margin: 0; font-family: var(--display); font-weight: 500; font-size: 2.1rem; line-height: 1.1; letter-spacing: -0.01em; }
+.name .cjk { display: block; font-family: "Noto Serif SC", var(--display); font-size: 1.05rem; color: var(--muted); margin-top: 6px; letter-spacing: 0.08em; }
+.role { margin: 0; color: var(--muted); font-size: 0.95rem; line-height: 1.5; }
+
+.contact { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 0.9rem; }
+.contact li { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.contact svg { flex: none; width: 16px; height: 16px; fill: none; stroke: var(--muted); stroke-width: 1.6; }
+.contact .addr { font-family: var(--mono); font-size: 0.82rem; overflow-wrap: anywhere; user-select: all; }
+.copy {
+  font: 500 0.72rem var(--mono); text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--accent); background: transparent; border: 1px solid var(--rule);
+  border-radius: 4px; padding: 2px 7px; cursor: pointer; flex: none;
+}
+.copy:hover { border-color: var(--accent); }
+
+.lang { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; padding: 3px; background: var(--surface); width: max-content; }
+.lang button {
+  font: 500 0.82rem var(--body); color: var(--muted); background: transparent; border: 0;
+  padding: 4px 14px; border-radius: 999px; cursor: pointer;
+}
+.lang button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); }
+
+.toc { display: none; }
+@media (min-width: 960px) {
+  .toc { display: grid; gap: 2px; font-size: 0.88rem; border-top: 1px solid var(--rule); padding-top: 18px; }
+  .toc a { color: var(--muted); text-decoration: none; padding: 3px 0; }
+  .toc a:hover { color: var(--accent); }
+}
+
+/* ---------- Main column ---------- */
+main { min-width: 0; display: flex; flex-direction: column; gap: 64px; }
+.lede { display: grid; gap: 20px; }
+.eyebrow { font: 500 0.75rem var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 0; }
+.thesis {
+  margin: 0; font-family: var(--display); font-weight: 400;
+  font-size: clamp(1.7rem, 1.1rem + 2.2vw, 2.6rem); line-height: 1.18; letter-spacing: -0.015em;
+  text-wrap: balance; max-width: 22ch;
+}
+:root:lang(zh) .thesis { max-width: 18em; line-height: 1.35; letter-spacing: 0; font-weight: 500; }
+.thesis em { font-style: italic; color: var(--accent); }
+:root:lang(zh) .thesis em { font-style: normal; }
+.bio { margin: 0; max-width: 64ch; color: var(--ink); }
+.bio strong { font-weight: 600; }
+
+.figure { margin: 4px 0 0; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 16px 16px 12px; }
+.figure canvas { display: block; width: 100%; aspect-ratio: 2.25 / 1; max-width: 100%; }
+.figure figcaption { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; font-size: 0.8rem; color: var(--muted); margin-top: 10px; }
+.key { display: inline-flex; align-items: center; gap: 7px; }
+.sw { width: 18px; height: 0; border-top: 3px solid currentColor; display: inline-block; }
+.sw.l { color: var(--accent); } .sw.r { color: var(--amber); }
+.sw.d { color: var(--drift); border-top-style: dashed; border-top-width: 2px; }
+.figure .note { margin-left: auto; font-style: italic; }
+
+.facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-block: 1px solid var(--rule); }
+.facts div { padding: 14px 12px 12px; display: grid; gap: 2px; }
+.facts div + div { border-left: 1px solid var(--rule); }
+.facts b { font: 500 1.7rem/1 var(--display); font-variant-numeric: tabular-nums; }
+.facts span { font-size: 0.78rem; color: var(--muted); line-height: 1.35; }
+@media (max-width: 560px) {
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .facts div:nth-child(3) { border-left: 0; }
+  .facts div:nth-child(n+3) { border-top: 1px solid var(--rule); }
+}
+
+section { display: grid; gap: 22px; scroll-margin-top: 24px; }
+h2 {
+  margin: 0; font-family: var(--display); font-weight: 500; font-size: 1.55rem; line-height: 1.2;
+  display: flex; align-items: baseline; gap: 14px; text-wrap: balance;
+}
+h2::after { content: ""; flex: 1; border-bottom: 1px solid var(--rule); transform: translateY(-6px); }
+h3 { margin: 0; font-size: 1.02rem; font-weight: 600; line-height: 1.4; }
+
+/* Dated entries: date rail on the left */
+.entries { display: grid; gap: 28px; }
+.entry { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: 4px 24px; }
+.date { font: 0.82rem/1.9 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.entry .body { display: grid; gap: 6px; min-width: 0; }
+.sub { color: var(--muted); font-size: 0.93rem; margin: 0; }
+.entry ul { margin: 4px 0 0; padding-left: 1.1rem; display: grid; gap: 8px; }
+.entry li::marker { color: var(--drift); }
+.entry li b { font-weight: 600; display: block; }
+.entry p { margin: 0; }
+@media (max-width: 640px) { .entry { grid-template-columns: 1fr; } .date { line-height: 1.4; } }
+
+/* Research themes */
+.themes { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+.theme { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 18px; display: grid; gap: 8px; align-content: start; }
+.theme .tag { font: 500 0.72rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.theme p { margin: 0; font-size: 0.92rem; color: var(--muted); }
+.theme h3 { color: var(--ink); }
+
+/* Publications */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.filters button {
+  font: 500 0.8rem var(--body); color: var(--muted); background: transparent;
+  border: 1px solid var(--rule); border-radius: 999px; padding: 4px 12px; cursor: pointer;
+}
+.filters button[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+.filters .count { font-family: var(--mono); font-size: 0.72rem; margin-left: 4px; opacity: 0.8; }
+.pubs { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; counter-reset: pub; }
+.pub { display: grid; grid-template-columns: 3.2rem minmax(0, 1fr); gap: 16px; padding: 16px 0; border-top: 1px solid var(--rule); }
+.pub:first-child { border-top: 0; }
+.pub .yr { font: 500 0.85rem/1.7 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.pub .t { font-family: var(--display); font-size: 1.12rem; line-height: 1.35; margin: 0 0 4px; font-weight: 500; }
+.pub .a { margin: 0; font-size: 0.9rem; color: var(--muted); }
+.pub .a b { color: var(--ink); font-weight: 600; }
+.pub .v { margin: 2px 0 0; font-size: 0.9rem; }
+.pub .v i { font-style: italic; }
+.badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.badge { font: 500 0.7rem/1.6 var(--mono); padding: 0 7px; border-radius: 4px; border: 1px solid var(--rule); color: var(--muted); letter-spacing: 0.02em; }
+.badge.kind { color: var(--accent); border-color: transparent; background: var(--accent-soft); }
+.badge.review { color: var(--amber); border-color: currentColor; }
+
+/* Simple lists */
+.plain { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.plain li { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: 16px; }
+.plain .yr { font: 0.82rem/1.9 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.plain .id-no { font-family: var(--mono); font-size: 0.82rem; color: var(--muted); }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 28px 40px; }
+.cols h3 { margin-bottom: 10px; }
+.cols ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 8px; font-size: 0.95rem; }
+
+.skills { display: grid; gap: 14px; margin: 0; }
+.skills div { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: 16px; }
+.skills dt { font-weight: 600; font-size: 0.92rem; }
+.skills dd { margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 0.82rem; padding: 2px 10px; border-radius: 999px; background: var(--surface); border: 1px solid var(--rule); }
+@media (max-width: 640px) { .skills div, .plain li { grid-template-columns: 1fr; gap: 4px; } }
+
+footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 0.8rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+</style>
+
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <div class="id">
+      <img class="photo" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAYEBQUFBAYFBQUHBgYHCQ8KCQgICRMNDgsPFhMXFxYTFRUYGyMeGBohGhUVHikfISQlJygnGB0rLismLiMmJyb/2wBDAQYHBwkICRIKChImGRUZJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJib/wAARCAHWAWgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD6pooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAoprMFGTwPU1DJMCuQz49UX/ABoAnLKDgkA+9KSRXMeIPEWm6HaNc6xqS2duv3muCAfyAP8AjXh2t/H+3+3SRWNjdy2KHAAmVfMHqMpkZ/Dj3oHY+lBPGW27ufSmx3ETsVDjOeB618fa78b9dvR5Wm6fa6dAD8xJaR3/AN4k1i2/xb8dW7HOqCaLG0JswFHsVwc+9AWPuEc0V8q+Ev2jNX0+BbbXNHh1MKMCeOYxyn/eyCD+la9l+0lIJ3e98OK8JPypBcEFPqSOf0oCx9J0V4Lb/tHaFMMSaHdwkjqJg2PrwK7rw/8AFXwrqNpHLe6na6dNJIUSKWXJPXnjgA49aAsz0Cis+LWdJlmihj1O0eWYkRokykuR1A56itCgQUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUU1pEXjOT6CgB1U9S1Gz061mu7y4it7eBd0s0rhUjHqxPSuP8AiP8AEzw94Js839yJr2Rcw2MDBppPf0Vf9o/hmvk34i/EbxF47uSt9KLPS433QabA2Y0/2mP8be5/ACgdj3Hxt+0LpdhcyWnhfThrMqHH2qRikOe+OMn615B4j+M3xE1yV8ayNMiYYEWnqI8D/e5bP4ivOgqkjc7H2HOKl8tP7uR7nNMdh95d31/cNdX1xNeTt96WeQyMfxJqJIz1KtU0cS/88VY+3NWYLZXzhXzjoMAD86BlN0Yk7TyOmBUWGjz6EdAePyq9cKiLg7ScdR1qsZBnG7cP9oZNICAqrZ42MKVMjII7VYCKzgxqd3p1p81syFQqtgjIHUgUXCxUBOV9hjNWYJJEZShbKnIANQuuxio4OaEbA96YjRt9Z1W0u4Li0uZo7i2YPHMkhDIQcgg113/C4/HrXRmuNcnk3EF1UhFOO2B0H0rhU27cEHrnrT3jiZRuiz6N0P8A9ekM968CftAzW8ptvFFtLLbOBi4tzveJu52HkqfTtXvXhPxj4f8AFNsbjRtVtb1F+8IpMOv+8hwy/iK+BWtu6ylfZgRV3QdU1XQdVh1bTLnybqA5Vxhgw7qw/iU9waYrH6H0V4v8JfjTpHiI2+i63t03VnYpGST5M3oFY9D2wfzNezg59qRItFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFHtQAjgEc5+gryf41/FOy8C2X9m6fFFda/cpmOInK26H/lo/8ARep+lJ8Zfi7p/gyyew0qSK81qUEIgbIh/wBpq+PNW1O/1jUrjUtRuXuLu5cvLK/Vj/ntQMdq2pX2r6ncalqV093e3L75Zn+8x/oB2A6Cq6t0AOcdh0FNVTj5eAe56mnKDwF6+ppjJoyM/MQo9cZNW1Cr90NnsW5P5dqht42HO7n26/8A1qkkZd21Ex6ZbOaQxD5uR8pAJ6mramQJ80qgd8HHP1xmqg3YySvPOGzSGaVRneB6fL/KgBJChzmX8ASf50kSOR/qwyZ4LDH61A8hZiSxJPpT7d2Vi2FPTrg/oaGNHVeHbSO5nWCRSsgbeV2fMPXHrxzTfE6Kl5KYgFQfJvPQ7fb6/wBKq6fqc0CoyN8uRhe4+mf8/Stuys11J0M0T7AQ37xR0J9vbn061i9Hc2WqsjhpVI5C4VuhPU1GoPPykfhXb+INFS1xJPtUszAhVwzY6YHp9cCuQufKDFV3gZ45z/8ArrRSuZSjYjjVmOPyq1HvUEOnynqeo/8ArVnsTvJXoPU1YjuZBg8ntkVRJb7Afw+5qGeIsMbSMfxY/r3pEfc2Qw6556fjV5YW2rIOM9geAaAMZsA7SzA9uK9v+F/x81TRHh0vxgJdV04YVLxRm4hHbI/5aD/x76145fQFgZUXg/eUf09/as49Mdu2aYmfovoer6brulW+raRdx3ljcrvimjPDD+h9jV+viH4KfEe58BeIFjvZppNBvCFuoNxIiPaVR6jvjqK+2bS4gu7aG6tpkmgmQSRyIcq6kZBB9CKRJLRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFeWfHP4hxeDNBa3tP32p3I2xpnAUH+8fT26/TrXoHiTW7Dw9od7rOpTCK0soTLKx9B2HuTgAdya+CPGfinU/F2tz6zqr4Mrs0VuD8qAnj8hgZ74oGjJ1K9uNS1G4v7yR5Zp3LsWbJJP9Ki4B5AJ9KjH69zThjqTgd2pjJAWJx2/SnqVHuT196hUGRsL8o9TVyyhXcHY/L+e76UgJIQWAwMjt/dFXYbcYyF2n+/3/AA9P50udzYUKuOuB0qNpmbKRbj23Dpx/ntQMjuMB9sY3N9OaqzJt/wBfuLf3QcAVoRkopKgZHVsdD/j7VVuF+c9C3c9//rUDKJOcgAKKcgGeeR7mpAgJAKl8nkL/AI1oWMKBgxi2DOAz5I/HApNjSuGnNLuxHLKgYc7T3z7kV3HhWC5MiSTG8XnG5T8uPcf5FReHxAu0G3WVgfvElf1Hb6gV6HZxBrUnyo13Dk7gwHbPv9eK55z6HTGGhzfie3tZFZrt40kPymRBub8BjjPsPxrzPV7aJJXMc5ZT2ZNh/Xn8q7/xJZXCBwGmkXcWwlxgc99uc5/OuD1BcytmduOCZlwc+h/xqoEVDDkBRugPtTowD0/75JqWZCGKzR4bP3g3H+FV2A7ZBH6VsYWJnTccg7T9f61o2c2E8p2U54IYdD/n0rOjkHRvTr61ZVQQuBk9u9MRJcbosx9H6Bg2Qw96yplBG8DaCefTNak4ZlVWGPRuD+dUJ1CnOOnDL6+4piKivg4b/Gvon9m74px2LW/gfX7gi2lfZpdy3IjYn/UsfQn7p7dPSvnV1wcZ47GkViD1I75HBB9RQI/SkHI96WvN/gb40/4S/wAEWNxc3HmalbL9mvM9TIvRj7sMH3z9a9IpCCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACkY4HAyT0FLWD438R2vhLwtqPiG8UyJaRFliXq7dFUfU4oA+ef2rfGZudTt/A1rIfs1oEu9QKn/AFkpGY4/oB834r6V88sxJJP/AOqruuald6vq15qd/L5l1eTPPO/Yuxycew6D2FUMgDce/QUxi5xyfypeWwW6dhTVBY5P4ntWjZQfLvbCoOpPU0DG21uXAaTKRjovQtV4NtyEGMcA9h9KQsOPXHb0/wAKQjoN3J6fLUlCj5jguEXGW3H+fv7U9SvmBF3KvZR95/8AAUzaMAA7sd8VYgiHXOG7n/69FxpXCVgoBcbccBQMY+n+frTYbWSRWOPLXrn/AD1rQtbVrhxsjMpHHoores/D13dDOcIOCd2ARWcppbm8aTZzSWhT/lluI6MXCj/GtrR7Lf8AI4Qxk8iOLcPxycfzrprTwwQRiA84+n4etdDZaLMow78eiAn9eK55VkdMaNiromkxxlQsbr3O3aGP5Dj8K6lIEjtCirsc92GT+Y60/TbNIlYeUUPQHcc5+nT+dWVV0kKxn5cfePJ/OudyNeQ4LX7aadSs9gs7biN0Cjf09DjINee6rYSRsGtJ/O4I2OOcf3WB/qK92v7MsmZI1JPXJ6f4f/Xrktb0KO5U/aIx5yj/AFkZIP4+taRq2JlSUkeJsDyYgAAeUNRiNWUg5yOgH3l+h7/Sut1/Qp7Vg+3eD/Go/mK5ya2KOQ2Cc8EHrXZGaa0OCdNxepUAOfmbkj5WA4NPBkgxIqfKPvL3HuKeYiVI5IHJH+HvTIWaFgJPmQ/dbHStDK1i/DKtxFuDBgedp6Z9RVC8jKEE5x7dqmAFrMZNv+jyH5gP4D6ii6DYxneCNytjhl/oaaEzNePsAMHkN2HtUBBB5GCOtWWBwf7uevof/r1FJz8x5PemSelfs/8AjAeFfGyQ3TH+zdVC29zgE7Dn5HAHoT+R9q+2rd/MiVsg9sjofevzbtppLe4jmhdo5I2DKwPKkHg19yfA3xMfEvgSxu5d32lMwTlv4pEABIx0B60AeiUUUUhBRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFfNH7WnitcWHhO3cFywubjB+4oHyg+5JJ/4CPWvpSeSOKJ5ZnCRxqWdmOAAOSTX57fEDXX8UeNNY1obit7dMYgevlg4Qf98gUDRz/B5P3RSZJO49T29BQwwxXIIX0p0SmR8DA7knoBTAntImkfsFXkk9BWh5gHAG1FGMepqupVFCL8qjnnv7mplUgZ78gA/wBfSkUSBcLksNx7Adv8Keqs3yjOTwSetNiy3zsc5PHHU+tWoY8jaTgYyxqG7GkY3GouANo3HOMD/P61vaXpO8rJdKzbjlIl4Lf4Cp9L01w0LyQiSZ8eXERgKP7zeg9q9J8PeH8YmmyXbku3U/QdhXLUq9jup0VbUzdH0DeA/kgKBwuPl/8Ar111jooXaZPmYdh/nFa1pYpGoVVxWlFEqrwK5G2zoulsZyadGqEFSc+pqX7KoGOce3NXyppCuO1Im5Q+zKCSAwHv/wDWpUtU3Zxn37/nV3b/AJNO24HSgdyg8BI2nDduRWfcWYxwMfXtW/5eajeEEEUBc4PV9KSRHKIMkYKkda848QeHljEk9vG2xTlk6svqRXt95YqwJGQa5jV9PZS0qr8wHP8AtCqjNxeg3FTVmeFTQPHkEZHUHsRVZu6lcqeDXf6/owjWSeCPbEfmdT1Q+3t/jXJXVo0UgPZhwcf5/KvQp1FI8+pScSjbgqfIcEgjgkdRSSxFU8ksCobMRzwPb6GllbMZRs7oz93uvuKUzJLbnJ+9xx2b1Hsev51ujmZlXKbGV0weOQe/sahGD0PHvVxwZEKMP3meD6mqPKtkcEUyRrDGD2NfQX7JniQwatqnhmeYBbqMXVupP/LROHA+qHP/AAGvAHw4yOPUehra8Ca5L4b8X6TrcTlPstyhkIPVCcMPoVJoEfocpyAaKitXSSFXjYMh+6w7jt+lS0hBRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAeYftGeJV8O/DO9RSPtOpsLKJc4+8CWP4KD+lfEyfu42mJO77qfXufwH8xXvf7XutPdeKtF8PxyBo7G2Nw6Dr5khwM/8BUfnXgV0wWXYpysXyg9ie5/OmMjA6KKsR4VOnOfzNQRjn61KTnAHX/PNAywhx8wAJz9cmply77eij73+FVQwXJXjjA9h61dgjJKxBMheT9ff6VLLirly27nGPTIrq9C05naMmEzXDN+7gH/AKEx7Af/AFvWqmgaS00sbY8yRjlF7n3Pt/n6er+HNFSzjyRulfG98dfb2A9K4atToehSp2Q7QNBjgHmy/vZmOWc+vt7V11rbqijjmmWsARcYxV+NQCPX1rkvc6GyREGOn51MqqB0oTHenjnmmZsZimMDU+PT8qYVPpTsAxVp4WnqtPVfahILkW0/Smsoqcrim7adhXKcqbh0rMvLYMDxx6VtyL7ZqnOtQy0ziNV04EOFC7SO4yMf4dq8+1jTDbytAqOAvK55wD/h0+mK9hvYQ+So57+4rk9d04zIFXh1GYm7H/Z/z0qoT5WXKPMjxzVrEgefESCCQPVSOorEik+ZsqFDcMPRux+hr0G/tUG9zGfLaTEq9Ch7fQ1xGvWMljdkdMcqw6MOoP416NOd9DzatO2pQkJDMCcFTgn+R/Ko7xcSBxwHGfx70t3jZFOo/wBlh+oP8x+FOhxPbvEeWAytbnKVASDx9KXAbK9mHSm/WlXII9RyKYH3T8A9ck174XaNczsWuIIvs0pPUmP5QfxAB/GvQq+e/wBljVZl8N3OnP8AcVvMTnnG9lP9K+hAcgGkJhRRRQIKKKKACiiigAooooAKKKKACiiigAooooAKbIQqkk4A6n0p1YnjW9GneFtUvWJAhtZGGOx2nmgD4c+JWttr3xG17WnZiJLh/KD/AMCINiD8gD+NcYOtW7+Zrm5ubnPEsrN+BJOKqjimMfnFOQkfMeS1R9cU9OTkn6UDLlqpY7upHP1Pb9a6fQNMafy22lyzYRcfeOeSfYfqaydGsnnZAQcOc4HUjsB+texeEtGWFBIyjeQOgxgdgPauOtU5VY76FO+rNTwzosdsvmbMuwAJI7elddbQ7ccAUyyiCIAO1XkX0rgvc7Gx6DbxjNWE6jjNRqmDzViMAelBLHge3FSqtNUAnGanUHGDVpENkZGOgzmkxg+lSkDt19qZgHoadhXG4weKkUH0pQtSKtNIVyM5xxTD3NTstMYDNNoCBue2DUEqjuKtstQSDtis2ikzNliGD3rLv7QMMAdOcVuuvOarXEYINQaJnmfiKzFvL9qEW+MqfNX1X+pFcZqWnfarWewmAaW2AeGYf8tYjyD+Fewapah1I4PcZ/UV5zqFkLZwu0j7LJlHJ/5ZE9P+Ak5+ma2py6CnHqeVm3aES2s3QnZn0z90/gwx/wACrNt5DDMMnGDziu58SaWzSSFV2uRtP49P1Ari71MyiUAjzV349G/iH55r0YT5keZVhysLpAkrFTwTkfSoM4P8qtfK9uCSN6AH8DwaqdyPStTE+h/2S74HXb7TWRCDaySBi3ON8fGPrz+PtX1NXx9+yZL/AMXJniAGTp8pyT0G5M8flX2CKQmFFFFAgooooAKKKKACiiigAooooAKKKKACiiigArh/jTM0Pwy8RSIxDixkC4GeSP8ADNdxXnf7QDGP4S+JHDEH7Jt49Cy5/wAKAR8KycAKePxphPpTpeHPsajHWmMkUZ4qzbR+ZKBjIzVZfbvXReGbA3Fyny5GRUTdka048zsdr4P0gF1ldcnAxntXrGlW4jRRiub8O2QgiQFa7C0AA/SvJnLmdz14rlVi9EuOnSrSEVBGuRjtVhRxjFQhEikn6VYRfSoVAAqVDVIlllAPxp655qFeQO9TpwBmrRAHp2/KmgYpx5NOA9qoQD6VItIFpwpokRxgVGRUvbmomzQwQ2QbRUD4P/1qmc8dagb6Vmy0QPxmoJE3dO9WCPmwQaRgCPaoLMq7g3R4I5BriPElkgZZ3QFMlX/3Tx/X9a9DuF4rnNZthJE425BprRmkdTzK4tTcWRZh++tW8uT3xwD+I/zxXn3iTT/s7SBVOFfzFz2zwR+eK9ZaJre7PAKzrsYE9WXgfmOPrXMeI9KW4jmTqVP3u5BAwfxH6g+tddKdmc9WnzRPMUbPGevBqE5BOeCOtSyo0E7I45U4IpkuS5bH3ua70eWz079mrVBpnxe0pG+5fxTWh57ldw/VB+dfb1fnT4L1E6R4w0LVBIY/smoQSlh2UON36Zr9FgQQCDkHuKRIUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFebftEgH4Q6/l9oEcZPGc/OvFek1w3xsQS/C7xNGV3/AOgO+3/dwc0AfBMuQ209e9Rgdu5p0md3NLAN0g9BzTGieCMvIAPWvTvA2mYVZWXHSuH0CyaeUYGeRXsPh62EEMagdK4sRPSx6OHh1Omsowiritq1H6VlQjG0eta1oeK4ErnY9DSi4FTp0x1qnvIUen1qaGVc5Y/L2xWiiZNlrA28c09Qf/r1Esi+uT7U9JQ5q+UVydGqdPU96hTBHNToy5xTUSbjsfjT1pAO/wCtPQZp2JbHAUoA7/ypw4PoaMD1q7CuRn/Ipj8g4qUgZ5PFNZMDhcUrXC5Vb86jINSyYBx3NRF1Cg7h+dQ4l3InGPf2pMYHNDTIMZPsBTJJVyDwc+nelyBzDJsbeKx7zDhu4rVc9QuRnpmsu4jEZJ6g9c1DjY1i0cRrEflKzcHymMqjH3lBO4fXGazr62+02rOMeYp6r3H/AOvmup1O3DFN4G0nBI9D3/lXO6QhRJbFwfMjJX644x+gpp6FM8d8VWZivzLjG8/Ngdxwf5Vhscxp7ZU16T8QNNG15lTHPP8Aj/MV5swxuX8cV6VKXNE8qtDlkMIOGA644r9EfAWo/wBreCdB1EyeY1zp8EjN6sUGf1zX53ryfcV93fAK5F18IvDUgbJS18o+xV2X+laswPQKKKKQgooooAKKKKACiiigAooooAKKKKACiiigArF8YWKar4e1HSnO0XtrLbk4/voVB/Mitqq90C6YwOuAf7p9fpQB+bU8TxsyOPmU4P1FLbDB9zxXS/ELS20rxbq9k8fltHdSHbjHBYkY9q520GZwvuBQ9iktT0HwhY/u0fHJZT+tej6cgXZ9M1zHha3/ANEhP+zk111um09P4eK8mo7yPZpq0TRV/mX2/wAKrXWuQW2YVbdIOCQeAfQetVNSuJI4hHFkSP3AyR+FV9P8PSXTZnRmU/7Dc/U8fpRBLqEmWX8SoDjzDIeyRc8/5+v9arXfie5Z/LiV7b1GQWb059Pp+db1v4TtjjcskAA24iYDP14z+takPhm2ij2hG9iJDk/nkH8a2TRkcQPF2owqIxGVPfepBP4nFT2XivVWkw8bxr1yEDA/kf5V1v8AwiemuC0tth/VTg/ivSmL4bghyixoU9l59j9aq6EV9P8AFHmYViHKj5juwR6/LiuosdSguIw8TxuOp2npXJ3GgEA/KNyncrLxn8exp2nWFxbsUTayn7hxynt9Pbt2qOYqyO7jnyA24YPUVZjkBHrXOWDyeWqn/wCuK1Ldzg85waXMJxNLzKQyAADHTvVdWOMnnNMmcgHnjFO5NiR7nb059KoTausTsvLFR2qu0haVgSdnBA6fhWNdecXeZAVB4OeuO386FIrlRNfeI2ilJEDNgZds8L+Z4rEuPHMTB0e0kUKf9YGBA+pH+FXDpLXCAzqJH++VY5UN9OhI9aaPDSSENIWfJzyA2fz6D6Yq00Joz/8AhM7WVRtK8jjIwfy7/hilj8RyBvvMi5yQehP1PersXgqN3Z3WNATwFUfzI/pU/wDwibQEeXdNHEucjAOc+5H+FDsGhFbeII5lMglUvjn0/EdR/nNMuNaGQZEDKehjYH9Klk8IWZAk82dpO5Vsf/WqjdeGXgBdbiR/VJP3mf6/lUuw0TM8N3bM0Tbxk45/SuauS0Grpub5ZUz6HdwM/wAq2LCN7WbyyDg/eHOT6HBqtrNqsrwyBtu19rEdgwIB/PFY2szVGF4pt1uYn3D7yEPj1z1H514nfxeVdMhHfFe73h8+B1kXbKo+Zf514t4kiCalKo+Uq/ANdeHfQ5MStEzHT74A65r7k/ZyV1+D+hBsY/fbcDt5rdfeviGFD5ijoxYKAa++/hTpa6J4A0bS1jkR7eHbKJMcyZJYjHBUkkg+hFdhwM62iiikIKKKKACiiigAooooAKKKKACiiigAooooAKzdY8m3tp76aVYooY2ZzjJwBWlXH/FGQx+DtQdcjOxWI/ulxmpk7JsqC5pJHy58TdJuNb1e419yUaYqvlcMQqjG5iOpPX8a8xtYWS82sOVbB+ua9Z1fULm7vJbSJFe38sqSOua46/0c2MwEsZjcHIBHUdiPUGualVcl7x6NbDqNrHoXhqL/AESLj+AV0yoe1Y3hyMizi/3BXRonSuOW50LYbDbqJAxGWPU1u2kaqvA57A1lRghga0LeUjaM4pJgzZtzkDnGOxq6F79vSsmCY9M0l5rem6eQL2/gg/66SBT/AI1pFmbRtHnHHao5oTjdxiuafx54QtmCXPiK0jJHG8kZ9+lamna9pGrIf7M1eyvf9mGZWP5dat7Ek207sHpQIU9Mc9qdkAkN17UqsF7/AErIsYkIVh6Adaspx2zn0qMHI3dqljAIouBKuMcfWmScjBqVVz2prLxVk3KUkAdiTwcYpv2dB8pFWmODwPyqF3XODU3HuNVADgDFXIIhjPXFUHuAGwB0ouNVtrCDz9QureyhH8c8oQD8zTT1BrQ13TaFwOO+ahk25KkZrlZPiL4LiYKfENvKTwPKVnH5gVds/Fnh/UpMWeqQSN/dyQf1rV7GaNRgc4yAPSqs6hkIbB+tSGVHUMjBx2IqtNLjI/SsmzRIy7qCORjheQMgntWZe2xZZRxl4+Meo5FbEh5JwR2qB0yQe2M/rUblnJ6nbNKqXEGN2CVB7+orxTxiobV5vlKEHBDDkV77GmY5Yv4oJSB7jn+mK8j8X6abvxJdiNC3A9scda3oO0jGvFyjZHI6I0S38JuE3Kp3Ic4w45APtkV96/D3UZtU8L2l3cOkkrqCZIxhXyM5x29COxBr4k03QC8N20kzRTRbfLXbncc8HPp/9avtP4VKf+Ff6JKYli861SUIP4Q3IH612xmpPQ4qlNwiuY6yiiirMAooooAKKKKACiiigAooooAKKKKACiiigArmvG2kSaroV/ZpK6NNEdpH94DI/UV0tMmGVz6UNXGnZ3PkGXSpPtRJndS5U+n1qv4s0tLWzSaSVnmkcLGHOWPr+HU16B4ls10/X7lJcBo53UZHRWO5cD6YrznxjdSXepwuAcRodi5+4CQPzOM/TFeXC6lZ9D2ptSimup1+hpttoh/sgV0MKZxWFo2DFHj+6K6a2XpWb3AjaMgZ71BJceUe/FarR5FVJLJWOSDmpKjY5bXNR1m6VbTTpRa+YcGTuB61o+E/BWlxwNeXaG8vSctLLyQfx79fzrUi0uKR8OmavQabe2+HsLoIB/A65z+Nb0pcpnWipKyPnrUPsU2tSza3LLaxPJKJpYYPNZCN2xQhI4yFX2HNVtHitTqGizabIJrmUI1zGkbR+VLvIMWSfnG0A7h/e9q9d8T/AA7m1bUJr7yUt5J+ZPIbKs397aR+fNHhHwAuh3qXtzELmaLJQMSqg9jgf411e0Vjn9nre52F21zowQzSPcacx2+Yxy8B9z3X+VacJHByGzyGHPFZtxHqdzbyW5jgaI5xkEkZ/Hmrnhq2uYdPa1uutu+2Ns53IeR+RyK5Z2b0NopqOpeU/Lz0qS3bJxTZk2KRuFRWjYlxWezHujYRcrjrxUcq4FSQyce9RXDZBrVvQys7lOQ45FUmJzu96tt8zYpiR43ZG7Azj1xWe5rsZcjzSXX2S0wJiMvIRkRj/GvDvH0FlL46uYtfvLmGyhkEbT+UZnjTbkMFyM5OPzr2bT31a1LXHkQs8h3EuDwD2rB8c+Fx4onS6a1FtdBNrSxNuVwOgINb03GKM5xk35Hh8SWUsWnvZTBrl4Wkuo1iZPszhjtTcTh8qA2R64r2y98E22reG7DWYt9nqLW0bs6Hac4z/U/p6Vg6J8NZbW7ie6tjcqrZMKkIjegJ649a9ReDVLmMJcGOCIAYjjHStXUWpn7NqyuefaLf6zp1x9i1AmXADJOgwT7MOhPQ/jXXQ3yTICTzTpdLjDFSmSP4j1NC2I9ACOmK4ZbnarWJ4gH7VJLFhenapraHYOTnipJQO3pQjNnLTR+VfSAHHmgOR6kcH9MVxeoafDda3MzOEYFeGbaD+Nd7qqBLi2l6YcqfoQf64rmrePGvO5UOkz+Wyt0OBmqi7FWuZN9o8xuzbwIW8vkysQXfPKk49+g4r6p8O6emlaDp2mRghbS2jhAJyflUCvJ9MsEfVLWNYY42mkiHyjlvmH9K9ortw+qbOHFPVIKKKK6TiCiiigAooooAKKKKACiiigAooooAKKKKACkcZUgd6WigDw34uWrx+JYzbgbruNA56428ZPtjGB3x6CvKtetPK1SRN2ViYc9sbTn9SP1r6F+LGnxpoa30UeZo7kOz9SQRjn24FeHXFv8Aa7u8lUb45IypI9SMnPv/AIVwVlyzbPWwz5qaRraI37iEnqVGfyrqLTmuR0cs9lGM7HKYzj7px1rrNOBCICckDBPqa5nubGoi5AqQRA9qWEZFW0jFCRDZVFscgjirCRutWEQg1KqAirSJciASyAetQO8zt0AFaBQZ6ZpgjBOAK0SfcE0V4lkHU8d+KuxxZGaWKDuanOFWmQ2Z14BjFUbVv35x2q7dnOapWwxKa5nqzWOxqo3y+lRzn5TzT4wccVFMM1o9ibalaIkv1q8sQYBsc4qjGuHrVtjkYNKATM+6VwMIQKprLOnDL+OK35IQw6c1AYexAIrVrsKMkVYL0BcMgPH0oecuOhNXFt4vQUpgReNmM0NS7ivHsZjR7+SKYIFXJrUeLA4GMVAydeKzcR8xTK47VXlPJ+lXJVwKozjGfpUFGLq2DCxz90gn8DWHChF3aKOrSFyfcNj+TVtalzFIvqpqLw/Z/vhe3RyFVRGv1O7/AAqlsWmkdfoERl8RaQo4KEsfoAa9SrzXwUGn8ULKRwkTHHoOn9a9Kruw69w83Ev3woooroOYKKKKACiiigAooooAKKKKACiiigAooooAKKKKAMvxJYx6lo93ZykBJIW5PY4yD+BGa+bdGjnt/PmkXDyOTJH6HJyP1r6kljWWNo3GVYYI9q+f/E1j/Zfja8sDu2ufPVm6Etk/1/lXNiI3jdHbhZ2k4swNO+WeRQAAGNdVpxyK5t4vI1KQdpAGFdBpj5AFcDO46C3HHNXoxiqNv25q/DiqRDLEa5FSCPuKSIc1OtaIzZH5eaesQA96lC+2KOnamIb0FQTvwamc8VTnOOtTJjSKlwwwRUMPD5qK5ky2AadF13CsTZLQ1IcFaZMBzRE2F602XoD0rToQQKPmq7AeQKoE4b2q1buDUrcGasfK0PGOwpsLDbzUx6VujEq+UQ2c49qeEyuT1qUgfX2pD7UDK7jI5GKgk6VZfnrmq8g61LKKUo61nXfQmtKas286GoaLRg6h90+/FakMQK7wNq54H+fpWZOPMuYI+xkGfoOf6V0FnA17cQ2UP+slYKPb1P4ClvoVe2p1nw9sSsVzqTrgzERx/wC6vX9f5V2FQ2dvFaWsVtCu2OJQqj2FTV6kI8sUjyZy5pNhRRRVEBRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAV5t8YNJlNomu20LyyWqjekYyxAOc/lmvSabIiSIUdQynggjINJq6syotxd0fNF9MszW9wvIORn6itXS34HNdV8V/DMVlaDWLCNY4FdVliQY2noCK43TJMgV5s6bg7M9WFRVFdHV2r9K04TwKwrOTNa0D+tSimjUiNWF4BqnE/HarETDpWiMmTKfwpT2yeaAAR1pW4H0piI5OlY+qXKwRnJwa0rmQIhJPSuRnla/u2Of3SHAHqaxmzWnG+o2OZ5ZdxGATx9K1bNSRu7VT8kJge9aVkFCDGOahbmknoWo0HPrT5Pu5IqWKEYHI3H3pbuFox8xrbl0Mb6mTP0OKjtrgpIAx4NTS8g5GDVZ4dwrLqaqxv2kgOOavKd3BrnNMuGGYnPzLx9a24ZMitoMxlGxZbgcVGemKkzkcH9Kjk65NWyERyDFVpTgVO54qrMallIqzngnNZV42Qa0bhvlNZN03BqGWjNh+bUoc/w7j+lejfD3TJI45tVuodjzfJBuHITufx4/KuX8BWMV74kLzJvjt4jJtPQntmvW1HArpo018TOSvVfwIWiiius4wooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigDI8XWP9o+GtRtNu4vAxX6jkfyrwDTXIQHvX0q6hlKsMgjBr5teBrXUbu1brFO8Z/BiK5cQtmduFe6N20k6c1s2zDiudtGwO9a1vIe5rjR2m3G4GKto/ANZUT5FXoSSoqkyWjQjf/8AVSk5Bqqr4OOTUpbj9Ku5nYo6q5+zyYPbFcrpUgEZ9Qxz+ddhcKGXFcze6a0UzTWz7HbkqehrGS6nRTtaxn6z4k03Tpo4b2Yws/RtjFR9SBx+NaFlqcTxK8cqujDIZWyCPUGse5hWaUi9t0KkY9RVW20kWAYWP7uMnPlj7v8A9aouacisdzDfbwCrn6ZqWe+JT53zjua4uO/miIDxlSKnF3NccLn3q+ZmfIal/qlvboZJpVjjHGWNJpusWl/GTbSFgpwcqRz+NZJsYTIJ7hfOkUfLntVmytJTIfLURKepxU3ZfIrGraNuviV9OcV0MDHAzmsvTrQRYI5PcmtRQQOtaJWMJtMthzjr+tRux5pgY49KaWrW5nYG6darzEY96dJJiqksnWpbGkVrpzggVlXbcfhV+dutZV2/UVBZ2HwuhJk1G5PokYP5mvRK474Zw7NDklx/rZyfyFdjXo01aCPMqu82FFFFaGQUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAHpXgvj20ax8baiCMLOyzqfUMP8Qa96rzH4zWGBp2qon3S1vI2PXlf/ZvzrGtG8DehK0zirQ5rThJ4xWLaPjHvWxbNnFeceoaUDdO9aMLcVlQtir0Tg4p3Ey+rc1Ju9TVRH9TUm+ncixK5+Wqc6hgaleTjGahZwTUtlIz57NHIGMetTw2ce0AgEYqxjJqxFtzzzQojc2ZN5p8Z27VGPen2NlGAcqM1oXJVWJwAKitmG4lcU7ahzNogmtEzyKfDAI/p3q8djDPU1ERwe1OwlJ7E0BFWgRiqEbAdKnEo9aEQydjxxUDNjnNJ5gI4NRsw5p3EI7Dn1qrKRzUjmq0hpFIqzNgVl3DZJNX7g81QMbz3EUEfLyuqL9ScUt2Vsj1vwRbm38M2KkYLKXP4mt6orWFYLeOBBhY1Cj6AYqWvVSsrHjt3dwooopiCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACsLxvpZ1jwxf2UYzMY/Mi/wB9fmH54x+NbtBpNXGnZ3PmvTpd8YPQ+hratpOlN8a6X/YHi+5t0XbaXf8ApNv6YY/Mv4Nn8CKht2z0NeXOPLKx68ZKUU0bEMnNWkfb3zWZC3TBq7HzzUFl5JcjrimvchM5NRc4rJ1V5hGyxgljwKVwtc0Gv4yfvcE06O7U4Oa4e6k1W2XftjlB7DIIrPbXNQA5iZB7c0zWNJy2PR59ThhGWfFUj4hhUjbyPWuA+33M+GKyt68VLHcGXho5VJB/gNF2bRw66noA8QWTx/vQRzye1Ol1i2tWKIuSRnOa87NzGmVaV0UjB+U81L58Y5855McABD1o5i/qytsdr/wkibxnoetXodbtZeDIAT6mvOy82P3dux934FQO12zkJGCw5+Vqd2J4W60PUTeIeVYVWm1JYzy3HSvPrYak7BRcOhPZDmtxNAuZbTzZry4acfMuW4z9KGznnR5NzsLO9EnINWy3Sud0qKaNFDfe71vIcKMmkncwkrBLyPeqjHOasSHrzVN2Cg1QitcEDNX/AAHaG+8WQvgmKzUzOe2ei/qf0rGvZgoJJwBXpfw20k6foQu5kK3N+RK2eoT+Aflz+NbUY80rmVefLC3c60dKKKK9A8wKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigDjvih4dOu6AZrZN2oWBM0GOrj+JPxA/MCvHNLulkjBz9K+lBXh/xO8Mt4f1f+2LCPGmXr/vFUcQSnr9A3Ue+R6VzV4XXMjsw9Sz5WVYW6YNXoJO1YVlch0BB61pQyjjmuBnebUQDe9EtsrnOKgtpOKvK2RSFsZN5ZoyFWUGuS1TT/Lc/J8vWu8uACKybmFXBDAGkbU6jg7nGwQIMc7WY/hW5YWrLxt3D25p0ujxyMSh2E0kVld254O8EdjirVup3KupK1yzPpqOuXQcgkdKRNJjR9pK52g4DClC3BOCjHC7cVPtuuNyEfLjrVe6L2rS3M65tEjdvMZWI5HNVmRDNi2iDdt1bcWmGaQNMSR1xWjb2kFuoCIPyo9DKeJ0M7S9MWMrI457it6OIMvsKaiFiMDFWlwq4qGcUpuTuyukKoxOKWQ4FSOaq3D471KJ3Gu/FUriTApZpSBiqDvJPMlvCu+aVgiKD1Y8AVa1DY1PC2kHXtcSGRC1nb4kuD2I7L+J/QGvZlAAAAwPQVj+FtEh0PTEtUw8zfPPKB99+/4DoK2a9OnDkjY8urU55XCiiitDIKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAqrqdjaapp8+n30IltrhCkiHuP8e+atUUAfNuv6dN4W8Q3GjSz+cqAPFIerxt0z79QfpU9vc7lBBrZ+ONsB4tspegmshz7q7f4iuJsrhon8uTqO/rXl1YpSaR69JuUE2dpZz8DmtOKTIrlrO5BAOa2rWfIHNYmhouc1C8QftQHzU8fNAio0HpkYoETngAVpLGDUqwjtVJMLmOYpF6EU9EkwNzc9q1mh6f4U5LZe4z7VVmLmRnxxTEckEVPHEe4q55QB4FLsAo5RNkAXAop78VEzAVLEMkYAc1nXcnvVi5mAFYt7cgDOeKRaGXdyEB5pfCQNx4s0kOMg3KnH0BP9KzG3zvubhR0961vCFxbWfi/TJ7uZYYVkILscAEqQMn6kVdP40iZ/Az3helLSA8UteseOFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUU2R0ijaSR1SNAWZmOAoHUk0AOrk9f8caNp2qf2Fa3KXmsshY20J3eQP70hH3R7Hk14b8ZPj1JcG50DwPMYrcEpNq6nDSeoi9B/t/l61F8E9Cew006jeqTe6ifOcvywX+EE/r+NDKirnQfEu6ur3VdPmupfNdYnA4wByDwK5uS3LoHX7w/Wuq+IUA8ywkC4wWX8wD/AErHtov3YGOK8qtdTPWo25EZ9pMUJHTHUelbVnd8gE1n3NoQd6cHrmoY2Kn+6az3NbHX28wI61ehkFcra3LLgE81sW1wDjmixJvxOKtRsKxophjrVpJx61SIaNPcKFfmqAnB4zipFlHrWlybFwtTGfHU1VM9RPP70mwsTyOAOtUricKDUc9yBnmse8uieBUMtIfe3fXBrN2tcPz92pI4XmfLZxV+KAKBxUlFRowqAAVzXia5NtbK6n/loAeM8GuunTC8Vw/jkEaXIw/hZT+tOHxIJbHqPwc8ctc3f/CM6nOXcrvspHOTjHMee/HI/KvYa+MfA1zcy+J9Ie1ZhcLcoFKnkc8n8q+gvH3j/UPBOn2eqSaeNTsftCxXYU7ZERhwynoTnseueor1IO55lWCTuj0yisvwzr2leJtFt9Z0a7W6s7gZVhwVPdWHZh0INalaHOFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFADZHSKNpJHVEQFmZjgKB1JNfJfx1+L0viqWbw34aneLQI2Kz3CHDXxHYekf/oXU8V0H7R/xViuFn8DeHLnehO3VLuJuCP+eCkf+PH8PWvniQiKBnPYUDSNrwF4efxJ4mgtNubWAiS4P+yDwv4nj86+m9JjWG92AAKBgAdq4r4NeGzo3hoXlzH/AKXefvXyORnoPwH9a7ezIa8ZxSZqti94x09r3QTOi5a3YSYA/h71x9rGcDivU9OxJCY3AZSMFT3FcVqmktpmoPAFPkt80LHuvp9R0/KuHEQ+0deHn9ky2t9ynIrPubHqQK6JI+BSSW4YdK4jsTOSKSRdiQP0qzb3JXHP51qXFkD0FUjZ7W4GM1aYWTLkN0COtWVuunOazVtwFxyD607yJB0bNVdE2NJbzHOad9u461meTP2Kke/FCQTscHA96dxWNL7aPWopL30NQizYry5z9KmisEBDHcTScgsV3klmJC8CnxW3OSMn3rQS2UdBVhIQMYFS3cZVig2jpUhTAq4EwOlRyJQK5m3A4Ncb4xg83S7tAMnyyR+HNdtcLxXN6+qJZzu+NoQ5z6YoWjK3Oc+AWmPf+LJr1hmGxhzn/bbgfoDXsXxJ0pdc8MajpRHzTQHYfRxyp/MCsv4I+Gn0Twqbu5XZc6g/nlCMFUxhAfw5/Gun1Fi84jNetE8ub1PmT4OfEC88B+JY5J5X/sW7kEeo255C9vNA7Mvf1AI9K+24pEliSWJ1eN1DKynIYHoRX59+KrRrLxPrVk67TFeyjGOxYkfoa+mP2aviBa6t4cg8H6jdY1fTFK24kPNxbj7u09yo+Uj0ANWYs9uooooJCiiigAooooAKKKKACiiigAooooAKKKKACiiigAoopssiRRvLK6xxoCzMxwFA6knsKAHV84fHr41CE3PhPwbdgzcxX2pRH/V9jHEf73Yt26Dnpn/HT43C+Sbwx4JvD9lYFLzVIWx5g7xxH09W79B6188Rrk4AGKY7EsC9+ua6DwhpR1nxXYWLLuhVhLIPUA8D86xYhzXp3wVsxLr7XJXhUIzQUj3q0t0htI4lXAUY4qlDGI70J2bOK2AB5We2KzXUm4SQD7p/SpNDfs2KYYGrOq2K6lYlQQJUO6Nj2P8AgelQWoygrQtyV61LV1Ziu07o4fYVZldSjqdrKexpdtdNrulef/plsv74D5l/vj/H0rnBg/8A1+1ebUpuDPQpzU0RPECOlVZIBnpWgRTGWsjUzjCPSkEPNXTH1xTljBNMdymIfapFh56VdWIVKIhQJsprEB2p4QCrBjpPLosTcjVfzqdEpEj5qwi4FNITZCy1DItXCKrz9KdgM66XAqnpmif2/qq28y5sLdg0/wD00PUJ/U+31rVt7ObUbn7NAdgH+slIyEH9TXa6Vp1tplokEC4Ve56k9yfetqNJyd3sZVavKrLclkVIYQiAKAMADtXP3Z/05Se9bs+WJFYmpJskST0YV6KOBHyt8U2V/iL4hZR8v2vHHsqg1ydtc3NjeQ3lnPJbXMDiSKaJtrow6EHtWr4puze+JdWuyc+bdyN/48axpOpoEfWXwR+M0PipovD3iVorbXcYgnHyx3uPQfwv/s9D29K9rr83o3eN1ZGZHQhlZTgqR0II6GvqH4LfHC2vrePQPG96ltexriDVJmCxzgdpD0V/fo3serJsfQFFMgmiuIUmglSWJxlXRgysPUEdafSEFFFFABRRRQAUUUUAFFFFABRRRQAUU2R0jRpJHVEUZZmOAB9a8P8Ai/8AHTTtBik0fwfNBqerspDXiEPBa9uvR39hwO/pQB6N8QPiB4a8C2AuNbvP38gzBZw/NPN/ur6e5wK+Tvif8YfEvjkS2Cn+ydEY/wDHjA+WlH/TV/4voMD61wGralqGr6hNqOq3s19ezHMk877mb/Aew4FVKYwA7CpYhTEXNTKKBkyDmvW/gh/rJ8ddxH6A15InWvVPgjOqahcof+ei4H1U/wCFCKR71IT9lA74qGxjLKFYZJPWnqxdKuWEWD0qSi/aptUA1cVcGo4l+WrCLmgm5IDnjtWJrWleYTc2y/vP4l7P/wDXrZGQaeMNwaiUVJWZUZOLujhNp9MYPIPUUhXPaun1XSlmzNDhZf0b6/41zzIyOyOpRx1U159Sm4s74VFJFfaaeE9qeBUgFZGlxirT9uKeq80/HtTsTchIPpQAfSptopQlVYREqmpMYFOwB3qOVwo5PSgBsjADNV44p72f7PbDn+OQjhB/j7VPZWlzqb4jzHBnmTHX2FdXYWENlCscaBQPzPua3p0nLVmdSoo6Lch0ywhsLZYox05JPVj3JqyzZ4p0pqP0rtSsjhbbd2NcVk6wuLZj6c1skZGax/EZEel3LnosTHI+hq0I+KbhvMubl/78zt/48aqyDvUin5Ru785pkh5oAhNIPSnN9KaaBHSeEfGvijwhOJfD+rz2kZOWtyd8L/VDx+Iwa958F/tHWMwitvF+lPaSdGvbEGSM+5jPzL+G6vmReeKXofb+VILH6FeHfEeheJLP7ZoWq22owd2gkBK+zDqD9RWrX506ff32mXiXum3lxZXSHKzW8hjYfiK9h8G/tDeKdJCW/iG1h162HHm5EM4H1A2t+IH1oFY+taK868H/ABk8CeJikKap/Zl4wH+jaiBCSfQMTtb8DXoiOkiB42DowyGU5BFAhaKKKACivDvFn7R3hHTcw+H7O612f++B5EI/4EwyfwFeJ+Lfjb8QPEZkiTUxo9m+R5GnDYcehkPzH8CKB2PrrxZ438K+E4TJr+t2tk+MrCX3Sv8ARBlj+VeHeL/2lxh4PCGhFuoF3qRwPqI1OfzP4V83SGSaVp55HllflpJGLM31J5puNx9hTA6XxV448W+LpGfX9dubmEnItkby4V+iLgfnmudICjaAAPT0pwGBimtQMaRzzSgZpOtPUc9KAHIKkUUiinLSGSLXo/wZVjq87AfKrx5Pp96vN1wCM9a9K+CU6f8ACQXNm/ytcRoyE92Qk4/ImgaPoe1jBA/lWlbR7fxqtaoFUZ6+lX4QMgD1oQ2WkXAHpU8YqKPrzUyDB56UEistAFPHSgDikAD3qjqOnwXafMuHA+Vx1FW2ahCD1pNJ6MabWqOLuYJbWYxzLg9m7MPakQiuwvbKG8hMci5H6g+orlb6ymsHxIC0RPyyD+voa4alJx1R206qlo9xBTqhRqk38c1ibD6M4HJqvLOqAkkU6ytbzU2Hkjy4e8rDj8PWqSb0QnZK7EknG8JGpkcnAVRkmtHT9DlnYS3/AAvUQjp+J/pWzpek21kvyJuc/ekbljWkABXVCjbVnLOt0iQwwJEgVVAA9BSyGpDTGGa6UjmIJBxUQHNTSelRd6YD+1c346mEHhXVpiceXaSnPvtNdBniuD+Mt6LPwJqKg4adfLH06mmgR8lSDAA9qjbpjt/KpZD8xqI0gIm4NMPWpWHaoyKYADipRjv+VQg81IKQCEY47Uh6+lP6jmozxwelMA4IIPIPY10nhfxv4s8Lsv8AYeu3dpEpz5G/fCf+ANkfpXNdKX3oEfQPhj9pLVoDHD4l0O3vkzhp7JzE+PXY2QT+Ior5+A5ooCxCFHH0pwFLTZGIFACMcttH41Ii4AxTI1IGTxUgye9AAfpTacTTfxoABipFGOtNQVJ7UgFApc84H503OenT19acvtTGSJx2r1H4G6f/AGhrGoFeJrWOKaJvRgxx/h+NeXqeRXrf7OjkeK9ShB/1ljuH/AZB/jSGfRFqqzxpcR/ckUEe3t+B4q4ISnOeKo6Yfs129rJxDOxkiPo38S/1FbRX1pAyCIHdkjirAHHSkCAU8d6YhAeKWlApCOaAIn60i8U5h3pUHNIB8bdqWWGOZCjqGUjBBHBqPo1TK1AHK6vo01sGnslaRByYhyw+nr9KxbQX2oA/ZbSRlHWRhtUfia9G4NQtCUJePBz1U9DWDoxbubxrNKxzeleHlcrPeOJu4T+Ef4108UKxqFUAAVXtpPLnMRUhWJ2n39KumtIwUdjOU3LcTpSUppBWhAmKQin9KaaAIJUyOOtQ98VZaoJAetAEZwDivIv2hZtvhvysn+HjP95gK9bY8g14f+0Xdf8AEuih7vcxr+Ssf8KBo+fn5NMP1px700+lAhhpCM80403vQAwjmnA0pIPDfgaYcKTkgUASdMCkY8HNV2n5woz70qgtyxyadhCqckgcinigDGAKPxoAB15opR1FFAyPHA+lIybhg0UUCGqzKSCc1KORkdDRRQApHakCk45oooAkCEUmC30oooGOwaco5oopASop9q9S/Z33D4heSMfvrCcH8Cp/pRRQB9OSWDSwFNwVgcqw/hPrV3TBLdW+X2h0JRsdCR3FFFJj6Fs2rjutILVz/EtFFMQ4Wr4+8tIbVz3WiigBptX9VpBauOcrRRQA42r5HK0fZpB/EtFFADkt5CfvLT5IHVCQVz2zRRQIrQ2zsChK56nngmrEcDkYJGRRRQAj28meq0q20mOq0UUAL9mk9VpPsr+q0UUANNq/qtRPaPg8rRRQMq/Y5C+3cuK+ZPj/AHs1zrhtuFgtbh4sd2kCKS30wwA/GiikUjyErTSOM0UVRI0g0m2iigBrLkYNV5IBndng9qKKEIcsYC9qMYOKKKAJQMil2miikMQKciiiigD/2Q==" alt="Portrait of Xiaofeng Ma" width="360" height="470">
+      <div>
+        <h1 class="name">Xiaofeng Ma<span class="cjk">马晓峰</span></h1>
+      </div>
+    </div>
+    <p class="role">
+      <span data-l="en">Doctoral Candidate, Sensor Informatics Group<br>Department of Electrical Engineering and Automation, Aalto University, Finland</span>
+      <span data-l="zh">芬兰阿尔托大学 传感器信息学组<br>自动化专业博士研究生</span>
+    </p>
+
+    <ul class="contact">
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>
+        <span class="addr" id="email-addr" data-l="en">i.xiaofeng.ma@outlook.com</span>
+        <span class="addr" id="email-addr-zh" data-l="zh">i_xiaofeng_ma@163.com</span>
+        <button class="copy" id="copy-email" type="button"><span data-l="en">Copy</span><span data-l="zh">复制</span></button>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 8v8M12.5 8H14a4 4 0 0 1 0 8h-1.5z"/></svg>
+        <a href="https://orcid.org/0000-0003-4451-4305" target="_blank" rel="noopener">ORCID 0000-0003-4451-4305</a>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+        <span><span data-l="en">Espoo, Finland</span><span data-l="zh">芬兰 埃斯波</span></span>
+      </li>
+    </ul>
+
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" id="lang-en" data-lang="en" aria-pressed="true">English</button>
+      <button type="button" id="lang-zh" data-lang="zh" aria-pressed="false">中文</button>
+    </div>
+
+    <nav class="toc" aria-label="Sections">
+      <a href="#research"><span data-l="en">Research</span><span data-l="zh">研究方向</span></a>
+      <a href="#experience"><span data-l="en">Projects</span><span data-l="zh">研究与项目</span></a>
+      <a href="#publications"><span data-l="en">Publications</span><span data-l="zh">论文发表</span></a>
+      <a href="#patents"><span data-l="en">Patents and talks</span><span data-l="zh">专利与报告</span></a>
+      <a href="#education"><span data-l="en">Education</span><span data-l="zh">教育背景</span></a>
+      <a href="#teaching"><span data-l="en">Teaching</span><span data-l="zh">教学与指导</span></a>
+      <a href="#awards"><span data-l="en">Awards and skills</span><span data-l="zh">荣誉与技能</span></a>
+    </nav>
+  </aside>
+
+  <main>
+    <!-- ===== Lede ===== -->
+    <section class="lede" id="about" aria-label="About">
+      <p class="eyebrow"><span data-l="en">Sensor fusion · Inertial navigation · Bayesian filtering</span><span data-l="zh">传感器融合 · 惯性导航 · 贝叶斯滤波</span></p>
+      <p class="thesis">
+        <span data-l="en">Estimating where people and devices are when the outside world <em>offers few observations</em>.</span>
+        <span data-l="zh">在<em>外部观测稀少</em>的条件下，估计人与设备的运动状态。</span>
+      </p>
+      <p class="bio" data-l="en">
+        I am a doctoral candidate in Automation at Aalto University, supervised by Professor Simo Särkkä (ELLIS Fellow), and expect to receive my doctoral degree in December 2026. My research focuses on <strong>intelligent sensing and multisensor information fusion, particularly probabilistic state estimation for complex dynamic systems with limited external observations</strong>. My work has appeared in <i>IEEE Transactions on Instrumentation and Measurement</i>, <i>IEEE Sensors Journal</i> and leading international conferences.
+      </p>
+      <p class="bio" data-l="zh">
+        芬兰阿尔托大学自动化专业博士生，师从贝叶斯滤波与状态估计领域知名学者、欧洲机器学习与智能系统实验室会士（ELLIS Fellow）Simo Särkkä 教授，将于 2026 年 12 月获得博士学位。<strong>主要从事智能感知与多传感器信息融合研究，聚焦于复杂动态系统中弱外部观测条件下的概率状态估计。</strong>相关成果发表于 <i>IEEE Transactions on Instrumentation and Measurement</i>、<i>IEEE Sensors Journal</i> 等国际期刊及重要国际会议。
+      </p>
+
+      <figure class="figure">
+        <canvas id="track" role="img" aria-label="Simulated walk around a corridor loop. Footsteps of the left and right foot stay on the loop when an inter-foot distance constraint is applied, while the unconstrained inertial estimate drifts away."></canvas>
+        <figcaption>
+          <span class="key"><span class="sw l"></span><span data-l="en">Left foot</span><span data-l="zh">左脚</span></span>
+          <span class="key"><span class="sw r"></span><span data-l="en">Right foot</span><span data-l="zh">右脚</span></span>
+          <span class="key"><span class="sw d"></span><span data-l="en">Unconstrained INS (drift)</span><span data-l="zh">无约束惯导（漂移）</span></span>
+          <span class="note"><span data-l="en">Illustrative simulation of dual foot-mounted IMU positioning, not measured data.</span><span data-l="zh">双足 IMU 定位示意性仿真，非实测数据。</span></span>
+        </figcaption>
+      </figure>
+
+      <div class="facts">
+        <div><b>8</b><span data-l="en">published papers</span><span data-l="zh">已发表论文</span></div>
+        <div><b>3</b><span data-l="en">granted patents</span><span data-l="zh">授权专利</span></div>
+        <div><b>3</b><span data-l="en">oral talks at IPIN</span><span data-l="zh">IPIN 口头报告</span></div>
+        <div><b>4</b><span data-l="en">bachelor's theses advised</span><span data-l="zh">指导本科毕设</span></div>
+      </div>
+    </section>
+
+    <!-- ===== Research ===== -->
+    <section id="research">
+      <h2><span data-l="en">Research</span><span data-l="zh">研究方向</span></h2>
+      <div class="themes">
+        <article class="theme">
+          <span class="tag">Wearable IMU</span>
+          <h3><span data-l="en">Human kinematic constraints</span><span data-l="zh">人体运动学约束</span></h3>
+          <p data-l="en">Modeling inter-foot distance, spacing vectors and gait symmetry as constraints that bound drift in foot-mounted inertial positioning.</p>
+          <p data-l="zh">将双脚间距、间距向量与步态对称性建模为约束，抑制足部惯性定位中的累积漂移。</p>
+        </article>
+        <article class="theme">
+          <span class="tag">Differentiable filtering</span>
+          <h3><span data-l="en">Learning filter parameters</span><span data-l="zh">可微滤波参数估计</span></h3>
+          <p data-l="en">Optimizing Kalman filter parameters with automatic differentiation from sparse, unordered and probabilistic supervision.</p>
+          <p data-l="zh">基于自动微分，在稀疏、无序、概率性监督信息下优化卡尔曼滤波器参数。</p>
+        </article>
+        <article class="theme">
+          <span class="tag">Optical tracking</span>
+          <h3><span data-l="en">Smartphone motion capture</span><span data-l="zh">智能手机光学运动跟踪</span></h3>
+          <p data-l="en">Open-source multicamera tracking with consumer phones, and extrinsic calibration from noisy distances between random spatial markers.</p>
+          <p data-l="zh">基于消费级手机的开源多相机跟踪系统，以及利用随机空间标记点间含噪距离的相机外参标定。</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===== Experience ===== -->
+    <section id="experience">
+      <h2><span data-l="en">Research and project experience</span><span data-l="zh">研究与项目经历</span></h2>
+      <div class="entries">
+        <div class="entry">
+          <div class="date">2026/01 – <span data-l="en">now</span><span data-l="zh">至今</span></div>
+          <div class="body">
+            <h3><span data-l="en">VitalSigns collaboration</span><span data-l="zh">VitalSigns 合作项目</span></h3>
+            <p class="sub"><span data-l="en">Pre-postdoctoral research collaboration</span><span data-l="zh">博士后预研合作</span></p>
+            <p data-l="en">IMU-based motion tracking and position awareness for a handheld biosignal acquisition device, from algorithm prototypes to on-device implementation.</p>
+            <p data-l="zh">面向手持式生物信号采集设备，联合研究基于 IMU 的运动跟踪与位置感知方法，并开展算法原型验证与设备端落地实现。</p>
+          </div>
+        </div>
+        <div class="entry">
+          <div class="date">2021/12 – 2026/12</div>
+          <div class="body">
+            <h3>Aalto University</h3>
+            <p class="sub"><span data-l="en">Doctoral candidate</span><span data-l="zh">博士研究生</span></p>
+            <ul>
+              <li><b><span data-l="en">Scalable software framework for IMU-based motion tracking</span><span data-l="zh">可扩展的 IMU 运动跟踪软件框架</span></b>
+                <span data-l="en">Developed and released an open-source, modular Python framework for inertial navigation with constrained multi-IMU tracking and differentiable filter parameter estimation.</span>
+                <span data-l="zh">开发并开源模块化 Python 惯性导航框架，支持多 IMU 约束运动跟踪与可微滤波参数估计。</span></li>
+              <li><b><span data-l="en">Human kinematics and biomechanics for motion tracking</span><span data-l="zh">面向运动跟踪的人体运动学与生物力学研究</span></b>
+                <span data-l="en">Modeled and fused kinematic and biomechanical constraints for wearable IMU positioning, including inter-foot distance and motion symmetry.</span>
+                <span data-l="zh">研究人体运动学与生物力学约束在可穿戴 IMU 定位中的建模与融合，包括双脚间距及运动对称性约束。</span></li>
+              <li><b><span data-l="en">Optical motion tracking system</span><span data-l="zh">光学运动跟踪系统</span></b>
+                <span data-l="en">Built an open-source, smartphone-based multicamera tracking system and a camera extrinsic calibration method based on distances between randomly placed spatial markers.</span>
+                <span data-l="zh">开发基于智能手机的开源多相机运动跟踪系统，提出基于随机空间标记点距离信息的相机外参标定方法。</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="entry">
+          <div class="date">2018/09 – 2021/06</div>
+          <div class="body">
+            <h3><span data-l="en">Beihang University</span><span data-l="zh">北京航空航天大学</span></h3>
+            <p class="sub"><span data-l="en">Master's student</span><span data-l="zh">硕士研究生</span></p>
+            <ul>
+              <li><b><span data-l="en">Multifeature fusion positioning with a body-area inertial sensor network</span><span data-l="zh">体域惯性传感器网络多特征融合定位</span></b>
+                <span data-l="en">Combined cooperative body-worn IMUs with structured landmarks to improve the long-term accuracy of inertial dead reckoning.</span>
+                <span data-l="zh">研究体域多 IMU 协同与结构化地标融合方法，提升惯性航位推算的长期定位精度。</span></li>
+              <li><b><span data-l="en">Multisource information-aided indoor positioning</span><span data-l="zh">多源信息辅助的室内定位研究</span></b>
+                <span data-l="en">Contributed to crowdsourced WiFi fingerprinting and visual landmark-aided pedestrian dead reckoning.</span>
+                <span data-l="zh">参与 WiFi 众包指纹定位与视觉地标辅助行人航位推算研究。</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Publications ===== -->
+    <section id="publications">
+      <h2><span data-l="en">Publications</span><span data-l="zh">论文发表</span></h2>
+      <div class="filters" role="group" aria-label="Filter publications">
+        <button type="button" id="f-all" data-filter="all" aria-pressed="true"><span data-l="en">All</span><span data-l="zh">全部</span><span class="count">11</span></button>
+        <button type="button" id="f-journal" data-filter="journal" aria-pressed="false"><span data-l="en">Journal</span><span data-l="zh">期刊</span><span class="count">4</span></button>
+        <button type="button" id="f-conf" data-filter="conf" aria-pressed="false"><span data-l="en">Conference</span><span data-l="zh">会议</span><span class="count">4</span></button>
+        <button type="button" id="f-review" data-filter="review" aria-pressed="false"><span data-l="en">Under review</span><span data-l="zh">投稿中</span><span class="count">3</span></button>
+      </div>
+      <ol class="pubs" id="pubs">
+        <li class="pub" data-type="review"><span class="yr">—</span><div>
+          <p class="t">Parameters optimization of differentiable filter from sparse, unordered, and probabilistic supervision</p>
+          <p class="a"><b>X. Ma</b> and S. Särkkä</p>
+          <div class="badges"><span class="badge review"><span data-l="en">Under review</span><span data-l="zh">投稿中</span></span></div>
+        </div></li>
+        <li class="pub" data-type="review"><span class="yr">—</span><div>
+          <p class="t">Symmetry-informed dual feet positioning using IMUs</p>
+          <p class="a"><b>X. Ma</b> and S. Särkkä</p>
+          <div class="badges"><span class="badge review"><span data-l="en">Under review</span><span data-l="zh">投稿中</span></span></div>
+        </div></li>
+        <li class="pub" data-type="review"><span class="yr">—</span><div>
+          <p class="t">Extrinsic calibration of cameras based on sparse and noisy distance measurements of randomly distributed, spatial markers</p>
+          <p class="a"><b>X. Ma</b> and S. Särkkä</p>
+          <div class="badges"><span class="badge review"><span data-l="en">Under review</span><span data-l="zh">投稿中</span></span></div>
+        </div></li>
+        <li class="pub" data-type="conf"><span class="yr">2026</span><div>
+          <p class="t">Full-state versus error-state Kalman filters in IMU-based distance measurement</p>
+          <p class="a"><b>X. Ma</b> and S. Särkkä</p>
+          <p class="v">16th International Conference on Indoor Positioning and Indoor Navigation (IPIN), Rome, Italy, 2026.</p>
+          <div class="badges"><span class="badge kind"><span data-l="en">Conference</span><span data-l="zh">会议</span></span><span class="badge"><span data-l="en">Oral</span><span data-l="zh">口头报告</span></span></div>
+        </div></li>
+        <li class="pub" data-type="conf"><span class="yr">2025</span><div>
+          <p class="t">OPTICS: Open-source Position Tracking Implementation with Consumer Smartphones</p>
+          <p class="a"><b>X. Ma</b>, M. Lamine and S. Särkkä</p>
+          <p class="v">15th International Conference on Indoor Positioning and Indoor Navigation (IPIN), Tampere, Finland, 2025, pp. 1–6.</p>
+          <div class="badges"><span class="badge kind"><span data-l="en">Conference</span><span data-l="zh">会议</span></span><span class="badge">EI</span><span class="badge"><span data-l="en">Oral</span><span data-l="zh">口头报告</span></span></div>
+        </div></li>
+        <li class="pub" data-type="journal"><span class="yr">2024</span><div>
+          <p class="t">Spacing Vector and Varying Distance Constrained Positioning Using Dual Feet-Mounted IMUs</p>
+          <p class="a"><b>X. Ma</b> and S. Särkkä</p>
+          <p class="v"><i>IEEE Transactions on Instrumentation and Measurement</i>, vol. 73, pp. 1–11, 2024.</p>
+          <div class="badges"><span class="badge kind"><span data-l="en">Journal</span><span data-l="zh">期刊</span></span><span class="badge">SCI</span><span class="badge">JCR Q1</span><span class="badge">IF 5.9</span><span class="badge" data-l="zh">中科院 2 区 Top</span></div>
+        </div></li>
+        <li class="pub" data-type="journal"><span class="yr">2024</span><div>
+          <p class="t">High-Precision Indoor Positioning Method Based on Multifeature Fusion of Inertial Sensor Network</p>
+          <p class="a">N. Yu, <b>X. Ma</b>, X. Chen, R. Feng and Y. Wu</p>
+          <p class="v"><i>IEEE Transactions on Instrumentation and Measurement</i>, vol. 73, pp. 1–16, 2024.</p>
+          <div class="badges"><span class="badge kind"><span data-l="en">Journal</span><span data-l="zh">期刊</span></span><span class="badge">SCI</span><span class="badge">JCR Q1</span><span class="badge">IF 5.9</span><span class="badge" data-l="zh">中科院 2 区 Top</span></div>
+        </div></li>
+        <li class="pub" data-type="conf"><span class="yr">2023</span><div>
+          <p class="t">Indoor Positioning Methods Based on Dual Feet-Mounted IMUs With Distance Constraints</p>
+          <p class="a"><b>X. Ma</b> and S. Särkkä</p>
+          <p class="v">13th International Conference on Indoor Positioning and Indoor Navigation (IPIN), Nuremberg, Germany, 2023, pp. 1–6.</p>
+          <div class="badges"><span class="badge kind"><span data-l="en">Conference</span><span data-l="zh">会议</span></span><span class="badge">EI</span><span class="badge"><span data-l="en">Oral</span><span data-l="zh">口头报告</span></span></div>
+        </div></li>
+        <li class="pub" data-type="conf"><span class="yr">2020</span><div>
+          <p class="t">Graph Theory based Localization of Wireless Sensor Networks for Radio Irregularity Cases</p>
+          <p class="a"><b>X. Ma</b>, N. Yu, T. Zhou, R. Feng and Y. Wu</p>
+          <p class="v">International Conference on Sensing, Measurement &amp; Data Analytics in the era of Artificial Intelligence (ICSMD), Xi'an, China, 2020, pp. 51–56.</p>
+          <div class="badges"><span class="badge kind"><span data-l="en">Conference</span><span data-l="zh">会议</span></span><span class="badge">EI</span></div>
+        </div></li>
+        <li class="pub" data-type="journal"><span class="yr">2019</span><div>
+          <p class="t">Comparison of Pedestrian Tracking Methods Based on Foot- and Waist-Mounted Inertial Sensors and Handheld Smartphones</p>
+          <p class="a">N. Yu, Y. Li, <b>X. Ma</b>, Y. Wu and R. Feng</p>
+          <p class="v"><i>IEEE Sensors Journal</i>, vol. 19, no. 18, pp. 8160–8173, 2019.</p>
+          <div class="badges"><span class="badge kind"><span data-l="en">Journal</span><span data-l="zh">期刊</span></span><span class="badge">SCI</span><span class="badge">JCR Q1</span><span class="badge">IF 4.3</span><span class="badge" data-l="zh">中科院 2 区 Top</span></div>
+        </div></li>
+        <li class="pub" data-type="journal"><span class="yr">2019</span><div>
+          <p class="t">Effective Fingerprint Extraction and Positioning Method Based on Crowdsourcing</p>
+          <p class="a">N. Yu, S. Zhao, <b>X. Ma</b>, Y. Wu and R. Feng</p>
+          <p class="v"><i>IEEE Access</i>, vol. 7, pp. 162639–162651, 2019.</p>
+          <div class="badges"><span class="badge kind"><span data-l="en">Journal</span><span data-l="zh">期刊</span></span><span class="badge">SCI</span><span class="badge">JCR Q1</span><span class="badge">IF 3.745</span><span class="badge" data-l="zh">中科院 2 区 Top</span></div>
+        </div></li>
+      </ol>
+    </section>
+
+    <!-- ===== Patents and talks ===== -->
+    <section id="patents">
+      <h2><span data-l="en">Patents and talks</span><span data-l="zh">专利与学术报告</span></h2>
+      <div class="cols">
+        <div>
+          <h3><span data-l="en">Granted patents</span><span data-l="zh">授权专利</span></h3>
+          <ul class="plain">
+            <li><span class="yr">2023</span><div>
+              <span data-l="en">A high-precision indoor positioning method based on multifeature fusion of a body-area inertial sensor network. Chinese invention patent.</span>
+              <span data-l="zh">一种基于体域惯性传感器网多特征融合的高精度室内定位方法，中国发明专利。</span>
+              <div class="id-no">CN113984046B · N. Yu, X. Ma, R. Feng, Y. Wu, X. Chen</div></div></li>
+            <li><span class="yr">2018</span><div>
+              <span data-l="en">A portable noninvasive anemia detection device. Chinese utility model patent.</span>
+              <span data-l="zh">一种便携式无创贫血检测装置，中国实用新型专利。</span>
+              <div class="id-no">CN207520136U · J. Yu, Y. Zhang, W. Gao, X. Wang, X. Ma</div></div></li>
+            <li><span class="yr">2016</span><div>
+              <span data-l="en">A portable and stowable power strip. Chinese utility model patent.</span>
+              <span data-l="zh">一种新型便携可收纳插线板，中国实用新型专利。</span>
+              <div class="id-no">CN205595513U · J. Yu, X. Ma, Z. Tang</div></div></li>
+          </ul>
+        </div>
+        <div>
+          <h3><span data-l="en">Oral presentations</span><span data-l="zh">国际会议口头报告</span></h3>
+          <ul class="plain">
+            <li><span class="yr">2026</span><span>IPIN 2026, <span data-l="en">Rome, Italy</span><span data-l="zh">意大利 罗马</span></span></li>
+            <li><span class="yr">2025</span><span>IPIN 2025, <span data-l="en">Tampere, Finland</span><span data-l="zh">芬兰 坦佩雷</span></span></li>
+            <li><span class="yr">2023</span><span>IPIN 2023, <span data-l="en">Nuremberg, Germany</span><span data-l="zh">德国 纽伦堡</span></span></li>
+          </ul>
+          <p class="sub" style="margin-top:12px"><span data-l="en">IPIN: International Conference on Indoor Positioning and Indoor Navigation.</span><span data-l="zh">IPIN：室内定位与导航领域旗舰国际会议。</span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Education ===== -->
+    <section id="education">
+      <h2><span data-l="en">Education</span><span data-l="zh">教育背景</span></h2>
+      <div class="entries">
+        <div class="entry">
+          <div class="date">2021/12 – 2026/12</div>
+          <div class="body">
+            <h3>Aalto University</h3>
+            <p class="sub"><span data-l="en">Doctoral candidate, Sensor Informatics Group · GPA 5/5</span><span data-l="zh">传感器信息学组博士研究生 · GPA 5/5</span></p>
+            <p><span data-l="en">Supervisor: Professor Simo Särkkä. Coursework: Basics of Sensor Fusion, Bayesian Filtering and Smoothing, Machine Learning, Gaussian Processes, Computer Vision, Autonomous Mobile Robots.</span><span data-l="zh">导师：Simo Särkkä 教授。主要课程：传感器融合基础、贝叶斯滤波与平滑、机器学习、高斯过程、计算机视觉、自主移动机器人。</span></p>
+          </div>
+        </div>
+        <div class="entry">
+          <div class="date">2018/09 – 2021/06</div>
+          <div class="body">
+            <h3><span data-l="en">Beihang University</span><span data-l="zh">北京航空航天大学</span></h3>
+            <p class="sub"><span data-l="en">M.Eng. in Instrumentation Engineering · GPA 3.7/4</span><span data-l="zh">仪器仪表工程硕士 · GPA 3.7/4</span></p>
+            <p><span data-l="en">Coursework: Inertial Navigation Systems and Applications, Statistical Signal Processing, Matrix Theory, Modern Control Theory, Wireless Sensor Networks.</span><span data-l="zh">主要课程：惯性导航系统与应用、随机信号处理、矩阵理论、现代控制理论与方法、无线传感器网络原理。</span></p>
+          </div>
+        </div>
+        <div class="entry">
+          <div class="date">2014/09 – 2018/06</div>
+          <div class="body">
+            <h3><span data-l="en">China University of Petroleum (East China)</span><span data-l="zh">中国石油大学（华东）</span></h3>
+            <p class="sub"><span data-l="en">B.Eng. in Automation · GPA 3.7/4</span><span data-l="zh">自动化学士 · GPA 3.7/4</span></p>
+            <p><span data-l="en">Coursework: Microcomputer Principles, C/C++ Programming, Signals and Systems, Automatic Control, Sensor and Measurement Technology.</span><span data-l="zh">主要课程：微型计算机原理、程序设计语言（C/C++）、信号与系统、自动控制原理、传感器与检测技术基础。</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Teaching ===== -->
+    <section id="teaching">
+      <h2><span data-l="en">Teaching and supervision</span><span data-l="zh">教学与指导经历</span></h2>
+      <div class="cols">
+        <div>
+          <h3><span data-l="en">Teaching assistant</span><span data-l="zh">课程助教</span></h3>
+          <ul>
+            <li>Basics of Sensor Fusion, Aalto University, 2023, 2024, 2025</li>
+            <li><span data-l="en">Random Signal Processing, Beihang University, Spring 2020</span><span data-l="zh">随机信号处理，北京航空航天大学，2020 年春季</span></li>
+          </ul>
+        </div>
+        <div>
+          <h3><span data-l="en">Bachelor's theses advised</span><span data-l="zh">指导的本科毕业论文</span></h3>
+          <ul>
+            <li>Comparison of algorithms for reducing orientation drift in wearable inertial measurement units</li>
+            <li>Pedestrian positioning based exclusively on inertial measurement units</li>
+            <li>A review of wearable fall detection systems for the elderly</li>
+            <li>Gait detection methods using inertial sensors</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Awards & skills ===== -->
+    <section id="awards">
+      <h2><span data-l="en">Awards and skills</span><span data-l="zh">荣誉与技能</span></h2>
+      <ul class="plain">
+        <li><span class="yr">2017</span><span><span data-l="en">Provincial First Prize, National Undergraduate Electronics Design Contest</span><span data-l="zh">全国大学生电子设计竞赛省级一等奖</span></span></li>
+        <li><span class="yr">2017</span><span><span data-l="en">Honorable Mention, Interdisciplinary Contest in Modeling (ICM)</span><span data-l="zh">美国大学生数学建模竞赛跨学科建模组 H 奖</span></span></li>
+        <li><span class="yr">2016</span><span><span data-l="en">Provincial Second Prize, Undergraduate Biped Robot and Technology Innovation Competition</span><span data-l="zh">大学生双足机器人竞赛暨科技创新竞赛省级二等奖</span></span></li>
+        <li><span class="yr">2018</span><span><span data-l="en">Outstanding Undergraduate Thesis Award</span><span data-l="zh">优秀本科毕业设计（论文）奖</span></span></li>
+        <li><span class="yr">2015–20</span><span><span data-l="en">Outstanding Student Scholarship</span><span data-l="zh">优秀学生奖学金</span></span></li>
+        <li><span class="yr">2014–18</span><span><span data-l="en">Outstanding Student Honor</span><span data-l="zh">优秀学生荣誉称号</span></span></li>
+      </ul>
+
+      <dl class="skills">
+        <div><dt><span data-l="en">Algorithms</span><span data-l="zh">算法</span></dt><dd>
+          <span class="chip" data-l="en">Sensor fusion</span><span class="chip" data-l="zh">传感器融合</span>
+          <span class="chip" data-l="en">Inertial navigation</span><span class="chip" data-l="zh">惯性导航</span>
+          <span class="chip" data-l="en">Bayesian filtering</span><span class="chip" data-l="zh">贝叶斯滤波</span>
+          <span class="chip" data-l="en">Gaussian processes</span><span class="chip" data-l="zh">高斯过程</span>
+          <span class="chip" data-l="en">Computer vision</span><span class="chip" data-l="zh">计算机视觉</span>
+          <span class="chip" data-l="en">Optimization</span><span class="chip" data-l="zh">优化算法</span>
+          <span class="chip" data-l="en">Signal processing</span><span class="chip" data-l="zh">信号处理</span>
+          <span class="chip" data-l="en">Differentiable filters</span><span class="chip" data-l="zh">可微滤波器</span>
+        </dd></div>
+        <div><dt><span data-l="en">Programming</span><span data-l="zh">编程</span></dt><dd>
+          <span class="chip">Python</span><span class="chip">MATLAB</span><span class="chip">C++</span><span class="chip">LabVIEW</span><span class="chip">STM32</span><span class="chip">MSP430</span>
+        </dd></div>
+        <div><dt><span data-l="en">Machine learning</span><span data-l="zh">机器学习</span></dt><dd>
+          <span class="chip" data-l="en">PyTorch (autodiff for filter tuning)</span><span class="chip" data-l="zh">PyTorch（滤波器参数自动微分优化）</span>
+          <span class="chip" data-l="en">Deep learning fundamentals</span><span class="chip" data-l="zh">深度学习基础</span>
+        </dd></div>
+        <div><dt><span data-l="en">Software</span><span data-l="zh">软件</span></dt><dd>
+          <span class="chip" data-l="en">Object-oriented architecture</span><span class="chip" data-l="zh">面向对象软件架构</span>
+          <span class="chip" data-l="en">Scientific computing</span><span class="chip" data-l="zh">科学计算</span>
+          <span class="chip">Git</span>
+          <span class="chip" data-l="en">LLM-assisted development</span><span class="chip" data-l="zh">大语言模型辅助开发</span>
+        </dd></div>
+        <div><dt><span data-l="en">Languages</span><span data-l="zh">语言</span></dt><dd>
+          <span class="chip" data-l="en">Chinese (native)</span><span class="chip" data-l="zh">中文（母语）</span>
+          <span class="chip" data-l="en">English (proficient)</span><span class="chip" data-l="zh">英语（熟练）</span>
+          <span class="chip" data-l="en">German (basic)</span><span class="chip" data-l="zh">德语（基础）</span>
+        </dd></div>
+      </dl>
+    </section>
+
+    <footer>
+      <span>© 2026 Xiaofeng Ma</span>
+      <span><span data-l="en">Last updated November 2026</span><span data-l="zh">更新于 2026 年 11 月</span></span>
+    </footer>
+  </main>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  const root = document.documentElement;
+
+  /* ---------- Language ---------- */
+  function readStoredLang() {
+    try { return localStorage.getItem("xm-lang"); } catch (e) { return null; }
+  }
+  function setLang(lang) {
+    root.lang = lang === "zh" ? "zh-CN" : "en";
+    document.querySelectorAll(".lang button").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.lang === lang));
+    });
+    try { localStorage.setItem("xm-lang", lang); } catch (e) { /* storage unavailable */ }
+  }
+  const hash = location.hash.replace("#", "");
+  const initial = (hash === "zh" || hash === "en") ? hash
+    : readStoredLang() || ((navigator.language || "").toLowerCase().startsWith("zh") ? "zh" : "en");
+  setLang(initial);
+  document.querySelectorAll(".lang button").forEach(function (b) {
+    b.addEventListener("click", function () { setLang(b.dataset.lang); });
+  });
+
+  /* ---------- Copy email ---------- */
+  const copyBtn = document.getElementById("copy-email");
+  copyBtn.addEventListener("click", function () {
+    const isZh = root.lang.startsWith("zh");
+    const el = document.getElementById(isZh ? "email-addr-zh" : "email-addr");
+    const original = copyBtn.innerHTML;
+    const done = function (ok) {
+      copyBtn.textContent = ok ? (isZh ? "已复制" : "Copied") : (isZh ? "已选中" : "Selected");
+      setTimeout(function () { copyBtn.innerHTML = original; }, 1600);
+    };
+    const selectText = function () {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      done(false);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(el.textContent.trim()).then(function () { done(true); }, selectText);
+    } else {
+      selectText();
+    }
+  });
+
+  /* ---------- Publication filter ---------- */
+  const pubItems = document.querySelectorAll("#pubs .pub");
+  document.querySelectorAll(".filters button").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      const f = btn.dataset.filter;
+      document.querySelectorAll(".filters button").forEach(function (b) {
+        b.setAttribute("aria-pressed", String(b === btn));
+      });
+      pubItems.forEach(function (li) { li.hidden = !(f === "all" || li.dataset.type === f); });
+    });
+  });
+
+  /* ---------- Trajectory figure ---------- */
+  const canvas = document.getElementById("track");
+  const ctx = canvas.getContext("2d");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Corridor loop (metres): rounded rectangle walked counter-clockwise.
+  const W = 13, H = 4.6, R = 2.6;
+  const segments = [
+    { k: "line", a: [-W + R, -H], b: [W - R, -H] },
+    { k: "arc", c: [W - R, -H + R], a0: -Math.PI / 2, a1: 0 },
+    { k: "line", a: [W, -H + R], b: [W, H - R] },
+    { k: "arc", c: [W - R, H - R], a0: 0, a1: Math.PI / 2 },
+    { k: "line", a: [W - R, H], b: [-W + R, H] },
+    { k: "arc", c: [-W + R, H - R], a0: Math.PI / 2, a1: Math.PI },
+    { k: "line", a: [-W, H - R], b: [-W, -H + R] },
+    { k: "arc", c: [-W + R, -H + R], a0: Math.PI, a1: 1.5 * Math.PI }
+  ];
+
+  function samplePath(step) {
+    const pts = [];
+    segments.forEach(function (s) {
+      if (s.k === "line") {
+        const len = Math.hypot(s.b[0] - s.a[0], s.b[1] - s.a[1]);
+        const n = Math.max(2, Math.ceil(len / step));
+        for (let i = 0; i < n; i++) {
+          const t = i / n;
+          pts.push([s.a[0] + (s.b[0] - s.a[0]) * t, s.a[1] + (s.b[1] - s.a[1]) * t]);
+        }
+      } else {
+        const len = R * Math.abs(s.a1 - s.a0);
+        const n = Math.max(2, Math.ceil(len / step));
+        for (let i = 0; i < n; i++) {
+          const a = s.a0 + (s.a1 - s.a0) * (i / n);
+          pts.push([s.c[0] + R * Math.cos(a), s.c[1] + R * Math.sin(a)]);
+        }
+      }
+    });
+    pts.push(pts[0].slice());
+    const cum = [0];
+    for (let i = 1; i < pts.length; i++) {
+      cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+    }
+    return { pts: pts, cum: cum, length: cum[cum.length - 1] };
+  }
+
+  const path = samplePath(0.05);
+
+  function poseAt(s) {
+    s = Math.max(0, Math.min(path.length - 1e-6, s));
+    let lo = 0, hi = path.cum.length - 1;
+    while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (path.cum[mid] <= s) lo = mid; else hi = mid; }
+    const p0 = path.pts[lo], p1 = path.pts[hi];
+    const t = (s - path.cum[lo]) / (path.cum[hi] - path.cum[lo] || 1);
+    return {
+      x: p0[0] + (p1[0] - p0[0]) * t,
+      y: p0[1] + (p1[1] - p0[1]) * t,
+      h: Math.atan2(p1[1] - p0[1], p1[0] - p0[0])
+    };
+  }
+
+  // Unconstrained INS: same walk integrated with a gyro heading bias and a small scale error.
+  const drift = (function () {
+    const out = [[path.pts[0][0], path.pts[0][1]]];
+    const bias = 0.0055, scale = 1.035;
+    for (let i = 1; i < path.pts.length; i++) {
+      const dx = path.pts[i][0] - path.pts[i - 1][0];
+      const dy = path.pts[i][1] - path.pts[i - 1][1];
+      const a = bias * path.cum[i];
+      const prev = out[i - 1];
+      out.push([
+        prev[0] + scale * (dx * Math.cos(a) - dy * Math.sin(a)),
+        prev[1] + scale * (dx * Math.sin(a) + dy * Math.cos(a))
+      ]);
+    }
+    return out;
+  })();
+
+  // Footsteps: stride 1.4 m per foot, feet offset 0.13 m from the centreline.
+  const halfGap = 0.13, stride = 1.4;
+  const steps = [];
+  for (let s = 0.2, i = 0; s < path.length - 0.3; s += stride / 2, i++) {
+    const p = poseAt(s);
+    const side = i % 2 === 0 ? 1 : -1; // +1 left, -1 right
+    steps.push({
+      s: s, left: side === 1, h: p.h,
+      x: p.x - Math.sin(p.h) * halfGap * side,
+      y: p.y + Math.cos(p.h) * halfGap * side
+    });
+  }
+
+  function token(name) { return getComputedStyle(root).getPropertyValue(name).trim(); }
+
+  let view = null;
+  function layout() {
+    const rect = canvas.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.max(1, Math.round(rect.width * dpr));
+    canvas.height = Math.max(1, Math.round(rect.height * dpr));
+    // World bounds from both trajectories.
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    path.pts.concat(drift).forEach(function (p) {
+      minX = Math.min(minX, p[0]); maxX = Math.max(maxX, p[0]);
+      minY = Math.min(minY, p[1]); maxY = Math.max(maxY, p[1]);
+    });
+    const pad = 18 * dpr;
+    const sc = Math.min((canvas.width - 2 * pad) / (maxX - minX), (canvas.height - 2 * pad - 14 * dpr) / (maxY - minY));
+    const ox = (canvas.width - sc * (maxX - minX)) / 2 - sc * minX;
+    const oy = (canvas.height - 14 * dpr + sc * (maxY - minY)) / 2 + sc * minY;
+    view = { dpr: dpr, sc: sc, ox: ox, oy: oy };
+  }
+  function X(x) { return view.ox + view.sc * x; }
+  function Y(y) { return view.oy - view.sc * y; }
+
+  function drawStatic(colors) {
+    const d = view.dpr, sc = view.sc;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Faint 2 m grid.
+    ctx.strokeStyle = colors.rule;
+    ctx.lineWidth = 1;
+    ctx.globalAlpha = 0.55;
+    ctx.beginPath();
+    for (let gx = -16; gx <= 16; gx += 2) { ctx.moveTo(X(gx), 0); ctx.lineTo(X(gx), canvas.height); }
+    for (let gy = -10; gy <= 10; gy += 2) { ctx.moveTo(0, Y(gy)); ctx.lineTo(canvas.width, Y(gy)); }
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    // Drifting INS estimate.
+    ctx.setLineDash([5 * d, 5 * d]);
+    ctx.strokeStyle = colors.drift;
+    ctx.lineWidth = 1.5 * d;
+    ctx.beginPath();
+    drift.forEach(function (p, i) { if (i === 0) ctx.moveTo(X(p[0]), Y(p[1])); else ctx.lineTo(X(p[0]), Y(p[1])); });
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // Growing uncertainty along the drift path.
+    for (let k = 1; k <= 4; k++) {
+      const i = Math.floor((drift.length - 1) * k / 4);
+      const r = (0.35 + 0.55 * k) * sc;
+      ctx.beginPath();
+      ctx.ellipse(X(drift[i][0]), Y(drift[i][1]), r, r * 0.7, 0.3, 0, Math.PI * 2);
+      ctx.strokeStyle = colors.drift;
+      ctx.lineWidth = 1 * d;
+      ctx.stroke();
+    }
+
+    // Footprints.
+    steps.forEach(function (st) {
+      ctx.save();
+      ctx.translate(X(st.x), Y(st.y));
+      ctx.rotate(-st.h);
+      ctx.fillStyle = st.left ? colors.accent : colors.amber;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, Math.max(3 * d, 0.16 * sc), Math.max(1.5 * d, 0.065 * sc), 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    });
+
+    // Start marker and scale bar.
+    const s0 = poseAt(0);
+    ctx.fillStyle = colors.ink;
+    ctx.beginPath(); ctx.arc(X(s0.x), Y(s0.y), 3.5 * d, 0, Math.PI * 2); ctx.fill();
+    ctx.font = (11 * d) + "px " + colors.mono;
+    ctx.textBaseline = "alphabetic";
+    ctx.fillText("start", X(s0.x) - 12 * d, Y(s0.y) + 16 * d);
+
+    const bx = 6 * d, by = canvas.height - 6 * d;
+    ctx.strokeStyle = colors.muted; ctx.lineWidth = 1.5 * d;
+    ctx.beginPath(); ctx.moveTo(bx, by - 4 * d); ctx.lineTo(bx, by); ctx.lineTo(bx + 2 * sc, by); ctx.lineTo(bx + 2 * sc, by - 4 * d); ctx.stroke();
+    ctx.fillStyle = colors.muted;
+    ctx.fillText("2 m", bx + 2 * sc + 6 * d, by);
+  }
+
+  function colorsNow() {
+    return {
+      rule: token("--rule"), drift: token("--drift"), accent: token("--accent"), amber: token("--amber"),
+      ink: token("--ink"), muted: token("--muted"), surface: token("--surface"),
+      mono: "\"IBM Plex Mono\", ui-monospace, monospace"
+    };
+  }
+
+  let colors = null;
+  function redraw(t) {
+    if (!view) return;
+    drawStatic(colors);
+    if (reduceMotion || t === undefined) return;
+    // A walker with a small, bounded 2-sigma ellipse travels along the constrained track.
+    const period = 16000;
+    const s = ((t % period) / period) * path.length;
+    const p = poseAt(s);
+    const d = view.dpr, sc = view.sc;
+    const breathe = 0.28 + 0.08 * Math.sin(s * 2 * Math.PI / stride);
+    ctx.beginPath();
+    ctx.ellipse(X(p.x), Y(p.y), breathe * sc * 1.6, breathe * sc, -p.h, 0, Math.PI * 2);
+    ctx.fillStyle = colors.accent;
+    ctx.globalAlpha = 0.14; ctx.fill(); ctx.globalAlpha = 1;
+    ctx.strokeStyle = colors.accent; ctx.lineWidth = 1.2 * d; ctx.stroke();
+    ctx.beginPath(); ctx.arc(X(p.x), Y(p.y), 3 * d, 0, Math.PI * 2);
+    ctx.fillStyle = colors.ink; ctx.fill();
+  }
+
+  function refresh() { layout(); colors = colorsNow(); redraw(reduceMotion ? undefined : performance.now()); }
+  refresh();
+  window.addEventListener("resize", refresh);
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", refresh);
+  new MutationObserver(refresh).observe(root, { attributes: true, attributeFilter: ["data-theme", "lang"] });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(refresh);
+
+  if (!reduceMotion) {
+    const loop = function (t) { redraw(t); requestAnimationFrame(loop); };
+    requestAnimationFrame(loop);
+  }
+})();
+</script>
+
+</body>
+</html>
